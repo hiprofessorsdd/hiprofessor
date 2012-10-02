@@ -1,0 +1,2 @@
+What to do:
+Change the push_to_web system to be a cron job that, perhaps hourly, runs and syncs up files both ways. That way, we aren't as dependent on users properly distinguishing between the two and don't run as much of a risk of having work lost.
