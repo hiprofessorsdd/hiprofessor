@@ -22,5 +22,6 @@ if [ $SCHED_PULL_WGET_RET -ne "0" ]; then
   echo -e "wget returns $SCHED_PULL_WGET_RET"
   echo -e "\e[00;31mERROR: Schedule download failed. Check that the semester and year are valid. The schedules might not be published yet. If all else fails, email hiprofessorsdd@gmail.com to report an error.\e[00m"
 else
+  cp /usr/lib/cgi-bin/hpdb.py hpdb.py
   python parse_sched.py $2$1.htm
 fi
