@@ -10,8 +10,8 @@ fi
 
 #check for swap files in either directory and further warn user:
 _SwapForce=
-declare -a _Directories=(/var/www /usr/lib/cgi-bin)
-for directory in $_Directories
+_Directories=(/var/www /usr/lib/cgi-bin)
+for directory in ${_Directories[*]}
 do
   cd $directory
   for swap in *.swp
