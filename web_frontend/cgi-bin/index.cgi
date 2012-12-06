@@ -29,8 +29,12 @@ print """
 print  '<body onload="initialize()">'
 
 
-print """<div id="map_canvas" style="Float:right; width:60%;  height:96% ;margin:10px"></div>
-        <object style="overflow:hidden" width="38%" height="80%" data="/cgi-bin/search.cgi"></object>"""
+print '<div id="map_canvas" style="Float:right; width:60%;  height:96% ;margin:10px"></div>'
+print '<img style="Float:left;padding:1px" border="0" src="http://i.imgur.com/tsfcS.jpg" alt="HP" width="104" height="90">'
+print '<div style="Float:left;padding: 10px;height:55px; color:#C40000; font-family:verdana; font-size:45px">'
+print '<b>HiProfessor</b>'
+print '</div>'
+print '<object name="frm" style="overflow:hidden;Float:left" width="38%" height="83%" data="/cgi-bin/search.cgi"></object>'
 print """  </body>
 </html>"""
 

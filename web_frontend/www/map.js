@@ -50,7 +50,7 @@ function randTags(){
 	}
 	return false;
 }
-function loadClass(Lat,Lng,build,room,dept,c_no,title,start,end,days,type){
+function loadClass(Lat,Lng,build,room,dept,c_no,title,start,end,days,type,crn){
 	if(isNaN(Lat) || isNaN(Lng)){
 		alert("Latitude: [-90, 90], Longitude: [-180,180].");
 		return false;
@@ -64,7 +64,7 @@ function loadClass(Lat,Lng,build,room,dept,c_no,title,start,end,days,type){
 		position: point,
 		animation: google.maps.Animation.DROP,
 		title: dept+' '+c_no,
-		info: '<html><body><div id="some_text" style="Float:left; width:auto; height: auto; margin: 5px; padding: 5px; border: 1px solid black; color:#C40000; font-family:verdana; font-size:15p    x; "><b>'+dept+" "+c_no+' - '+title+'</b><p style="font-size:12px">'+build+' '+room+'<br/>'+days+'<br/>'+start+' - '+end+'<br/>'+type+'</p></div></body></html>'
+		info: '<html><body><div id="some_text" style="Float:left; width:auto; height: auto; margin: 5px; padding: 5px; border: 1px solid black; color:#C40000; font-family:verdana; font-size:15p    x; "><b>'+dept+" "+c_no+' - '+title+'</b><p style="font-size:12px">'+build+' '+room+'<br/>'+days+'<br/>'+start+' - '+end+'<br/>'+type+'</p><form name="full" action="info.cgi" target="frm" method="GET"><button name="info" type="submit" value="'+crn+'">View Full Info</button></form><form name="user" action="schedule.cgi" target="frm" method="GET"><button name="add" type="submit" value="'+crn+'">Add to Schedule</button></form><form name="oh" action="officehours.cgi" target="frm" method="GET"><button name="oh" type="submit" value="'+crn+'">Add Office Hours</button></form></div></body></html>'
 	});
 	mark.setMap(map);
 	courseInfoWindow = new google.maps.InfoWindow();

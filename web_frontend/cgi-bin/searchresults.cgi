@@ -24,30 +24,38 @@ title = form.getvalue("title", "")
 dept_classes = []
 title_classes = []
 classes = [];
-if department !="":
-	dept_classes = hpdb.search_by_dept(department)
-if title != "":
-	title_classes = hpdb.search_class_title(title)
-if len(title_classes) != 0 and len(dept_classes) !=0:
-	classes = list(set(dept_classes) & set(title_classes));
-	sorted(classes,key=operator.itemgetter(1));
+if department !="" and title == "":
+	classes = hpdb.search_by_dept(department)
+elif title != "" and department == "":
+	classes = hpdb.search_class_title(title)
+elif department != "" and title != "":
+	classes = hpdb.search_title_and_dept(title,department);
 else:
-	classes.extend(title_classes);	
-	classes.extend(dept_classes);
-	sorted(classes,key=operator.itemgetter(1));
+	pass;
+#	classes.extend(title_classes);	
+#	classes.extend(dept_classes);
 
 print """
 <form name="dropdown" action="search.cgi" method="POST">
-<select name="classcrn" size="%s">""" %str(min(20,len(classes)))
-for c in classes:
-	print '<option value="'+str(c[4])+'">'+c[0]+' '+str(c[1])+' '+str(c[2])+' - '+c[3]+'</option>'
+<select name="classcrn" size="%s">""" %str(max(1,min(25,len(classes))))
+if len(classes) != 0:
+	for c in classes:
+		print '<option value="'+str(c[4])+'">'+c[0]+' '+str(c[1])+' '+str(c[2])+' - '+c[3]+'</option>'
+else:
+	print '<option value="0">None</option>'
 
 print """</select>
 <br/>
 <input type="submit" value="View"/>
 </form>
+<hr/>"""
+
+print '<form name="back" action="search.cgi">'
+print '<button name="back" type="submit">Back to Search</button>';
+print '</form>'
+
+print """
 </div>	
 </body>
 </html>
 """
- 

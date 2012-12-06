@@ -32,7 +32,7 @@ do
   done
   for swap in .?*.swp
   do
-    if [ "$swap" != "*.swp" ]
+    if [ "$swap" != ".?*.swp" ]
     then
       echo -e "\e[033mWARNING: $directory/$swap is present! Another user is likely editing text in there, and their work will be overwritten. Continue? [Y/n]"
       read -e _Continue

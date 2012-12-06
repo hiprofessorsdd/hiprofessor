@@ -12,10 +12,10 @@ def add_class(crn,title,dept,course_no,section_no,credit_hours):
 	cur.close();
 	conn.close();
 
-def add_meeting(location,room,meeting_type,day1,crn,start_time,end_time,prof_lname='',prof_rcs='',day2='',day3='',day4='',day5=''):
+def add_meeting(location,room,meeting_type,day1,crn,start_time,end_time,prof_rcs='',day2='',day3='',day4='',day5=''):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
-	cur.execute("INSERT INTO meetings VALUES (DEFAULT,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(location,meeting_type,day1,day2,day3,day4,day5,start_time,end_time,prof_rcs,crn,room,prof_lname));
+	cur.execute("INSERT INTO meetings VALUES (DEFAULT,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(location,meeting_type,day1,day2,day3,day4,day5,start_time,end_time,prof_rcs,crn,room));
 	conn.commit();
 	cur.close();
 	conn.close();
@@ -28,13 +28,13 @@ def add_professor(fname,lname,rcsid = ''):
 	cur.close();
 	conn.close();
 
-def add_office_hours(crn,building,room,starttime,endtime,instructor,day1,day2,day3,day4,day5,rcs):
-	conn = psycopg2.connect("dbname=postgres user=ubuntu");
-	cur = conn.cursor();
-	cur.execute("INSERT INTO office_hours VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(crn,building,room,starttime,endtime,instructor,day1,day2,day3,day4,day5,rcs));
-	conn.commit();
-	cur.close();
-	conn.close();
+#def add_office_hours(crn,):
+#	conn = psycopg2.connect("dbname=postgres user=postgres password=h()wdyPr0f");
+#	cur = conn.cursor();
+#	cur.execute("INSERT INTO meetings VALUES (DEFAULT,%s,%s,%s)",(fname,lname,rcsid));
+#	conn.commit();
+#	cur.close();
+#	conn.close();
 
 def add_location(bname,lati,longi):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
@@ -104,16 +104,6 @@ def search_class_title(serch):
 #	sorted(classes,key=operator.itemgetter(1));
 	return classes;
 
-def get_class_by_crn(serch):
-	conn = psycopg2.connect("dbname=postgres user=ubuntu");
-	cur = conn.cursor();
-	cur.execute("SELECT dept,course_no,section,title,crn FROM classes WHERE crn=%s",(serch,));
-	conn.commit();
-	clas = cur
-	cur.close();
-	conn.close();	
-        return clas
-
 def search_professors(serch):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
@@ -139,7 +129,7 @@ def search_by_dept(dept):
 def search_title_and_dept(serch,dept):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
-	cur.execute("SELECT dept,course_no,section,title,crn FROM classes WHERE dept LIKE %s AND title ILIKE %s ORDER BY dept,course_no,section",(dept,'%%'+serch+'%%'));
+	cur.execute("SELECT dept,course_no,section,title,crn FROM classes WHERE dept LIKE %s or title ILIKE %s ORDER BY dept,course_no,section",(dept,'%%'+serch+'%%'));
 	conn.commit();
 	classes = [];
 	for record in cur:
@@ -164,10 +154,9 @@ def get_class_location(crn):
 	return l;	
 
 def add_login(rcs,ip,browser):
-	clear_rcs(rcs);
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
-	cur.execute("INSERT INTO logins VALUES (%s,%s,%s, LOCALTIMESTAMP + interval '.5 hours')",(rcs,ip,browser));
+	cur.execute("INSERT INTO logins VALUES (%s,%s,%s,now() + interval '.5 hours')",(rcs,ip,browser));
 	conn.commit();
 	cur.close();
 	conn.close();
@@ -215,7 +204,7 @@ def add_to_sched(user,crn):
 def delete_from_sched(user,crn):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
-	cur.execute("DELETE FROM schedules WHERE username LIKE %s AND crn = %s",(user,int(crn)));
+	cur.execute("DELETE FROM schedules WHERE user LIKE %s AND crn = %s",(user,int(crn)));
 	conn.commit();
 	cur.close();
 	conn.close();
@@ -223,7 +212,7 @@ def delete_from_sched(user,crn):
 def get_sched(user):
 	conn = psycopg2.connect("dbname=postgres user=ubuntu");
 	cur = conn.cursor();
-	cur.execute("SELECT * FROM schedules WHERE username LIKE %s",(user,));
+	cur.execute("SELECT * FROM schedules WHERE user LIKE %s",(user,));
 	conn.commit();
 	schedule = [];
 	for r in cur:
@@ -231,42 +220,3 @@ def get_sched(user):
 	cur.close();
 	conn.close();
 	return schedule
-
-def get_locations():
-	conn = psycopg2.connect("dbname=postgres user=ubuntu");
-	cur = conn.cursor();
-	cur.execute("SELECT building FROM locations ORDER BY building");
-	conn.commit();
-	locs = [];
-	for c in cur:
-		locs.append(c);
-	cur.close();
-	conn.close();	
-        return locs
-
-def get_full_info(crn):
-	conn = psycopg2.connect("dbname=postgres user=ubuntu");
-	cur = conn.cursor();
-	cur.execute("SELECT l.latitude,l.longitude,l.building,m.room_no,c.dept,c.course_no,c.title,m.start_time,m.end_time,m.type,m.day1,m.day2,m.day3,m.day4,m.day5,c.credit_hours,c.section \
-			FROM locations l, meetings m, classes c\
-			WHERE m.crn = %s AND c.crn = %s AND m.location ILIKE l.building",(int(crn),int(crn)));
-	conn.commit();
-	l = [];
-	for c in cur:
-		l.append(c);
-	cur.close();
-	conn.close();
-	return l
-
-def get_office_hours(crn):
-	conn = psycopg2.connect("dbname=postgres user=ubuntu");
-	cur = conn.cursor();
-	cur.execute("SELECT o.blding,o.room_no,o.start_time,o.end_time,o.instructor,o.day1,o.day2,o.day3,o.day4,o.day5,o.rcs \
-			FROM office_hours o\
-			WHERE o.class = %s",(int(crn),));
-	conn.commit();
-	l = [];
-	for c in cur:
-		l.append(c);
-	cur.close();
-	return l;
